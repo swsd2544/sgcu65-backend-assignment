@@ -22,32 +22,32 @@ enum Status {
 }
 
 model User {
-  id          Int          @id @default(autoincrement())
-  email       String
-  firstname   String
-  lastname    String
-  password    String
-  role        Role
-  createdAt   DateTime     @default(now())
-  updatedAt   DateTime     @updatedAt()
-  deletedAt   DateTime?
-  Tasks       Task[]
-  UsersTasks  UsersTasks[]
-  Assignments UsersTasks[] @relation(name: "assignment")
+  id           Int          @id @default(autoincrement())
+  email        String
+  firstname    String
+  lastname     String
+  password     String
+  role         Role
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt()
+  deletedAt    DateTime?
+  createdTasks Task[]
+  givenTasks   UsersTasks[]
+  assignment   UsersTasks[] @relation(name: "assignment")
 }
 
 model Task {
   id         Int          @id @default(autoincrement())
   name       String
-  content    String
-  status     Status
+  content    String?
+  status     Status       @default(PENDING)
   deadline   DateTime
   userId     Int
   createdBy  User         @relation(fields: [userId], references: [id])
   createdAt  DateTime     @default(now())
   updatedAt  DateTime     @updatedAt()
   deletedAt  DateTime?
-  UsersTasks UsersTasks[]
+  usersTasks UsersTasks[]
 }
 
 model UsersTasks {
@@ -58,4 +58,6 @@ model UsersTasks {
   taskId     Int
   assignBy   User @relation(fields: [assignerId], references: [id], name: "assignment")
   assignerId Int
+
+  @@unique([userId, taskId], name: "usersTasksIdentifier")
 }

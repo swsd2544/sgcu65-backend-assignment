@@ -9,7 +9,7 @@ import { generateHashedPassword } from 'src/utils/bcrypt'
 import { CreateUserDto } from './dto/create-user.dto'
 import { UpdateUserDto } from './dto/update-user.dto'
 
-const baseUserSelect = {
+export const baseUserSelect = {
   id: true,
   email: true,
   firstname: true,
@@ -26,7 +26,7 @@ export class UsersService {
 
   async create(createUserDto: CreateUserDto) {
     const userDb = await this.prisma.user.findFirst({
-      where: { email: createUserDto.email },
+      where: { email: createUserDto.email, deletedAt: null },
     })
     if (userDb) {
       throw new BadRequestException('User already exists')
@@ -39,7 +39,7 @@ export class UsersService {
   }
 
   async findAll(search: string, searchFields: string[] = baseSearchFields) {
-    const whereOption: Prisma.UserWhereInput = {}
+    const whereOption: Prisma.UserWhereInput = { deletedAt: null }
     if (search && search !== '') {
       whereOption.OR = searchFields.map((field) => ({
         [field]: { contains: search },
@@ -52,8 +52,8 @@ export class UsersService {
   }
 
   async findOne(id: number) {
-    const userDb = await this.prisma.user.findUnique({
-      where: { id },
+    const userDb = await this.prisma.user.findFirst({
+      where: { id, deletedAt: null },
       select: baseUserSelect,
     })
     if (!userDb) {
@@ -64,13 +64,15 @@ export class UsersService {
 
   // Use for authentication only
   async findOneByEmail(email: string) {
-    const userDb = await this.prisma.user.findFirst({ where: { email } })
+    const userDb = await this.prisma.user.findFirst({
+      where: { email, deletedAt: null },
+    })
     return userDb
   }
 
   async update(id: number, updateUserDto: UpdateUserDto) {
-    const userDb = await this.prisma.user.findUnique({
-      where: { id },
+    const userDb = await this.prisma.user.findFirst({
+      where: { id, deletedAt: null },
       select: baseUserSelect,
     })
     if (!userDb) {
@@ -84,18 +86,26 @@ export class UsersService {
     ) {
       throw new BadRequestException('This email already exists')
     }
-    await this.prisma.user.update({
+    const user = await this.prisma.user.update({
       where: { id: userDb.id },
       data: updateUserDto,
+      select: baseUserSelect,
     })
-    return { ...userDb, ...updateUserDto }
+    return user
   }
 
   async remove(id: number) {
-    const userDb = await this.prisma.user.findUnique({ where: { id } })
+    const userDb = await this.prisma.user.findFirst({
+      where: { id, deletedAt: null },
+    })
     if (!userDb) {
       throw new NotFoundException('User not found')
     }
-    await this.prisma.user.delete({ where: { id } })
+    await this.prisma.$transaction([
+      this.prisma.user.delete({ where: { id } }),
+      this.prisma.usersTasks.deleteMany({
+        where: { OR: { userId: id, assignerId: id } },
+      }),
+    ])
   }
 }
