@@ -1,9 +1,8 @@
 import { baseUserSelect } from 'src/users/users.service'
-import { Prisma } from '@prisma/client'
+import { Prisma, User } from '@prisma/client'
 import {
   BadRequestException,
   Injectable,
-  InternalServerErrorException,
   NotFoundException,
 } from '@nestjs/common'
 import { PrismaService } from 'src/prisma/prisma.service'
@@ -25,24 +24,15 @@ const baseSearchFields = ['id', 'name', 'content']
 export class TasksService {
   constructor(private readonly prisma: PrismaService) {}
 
-  async create(user: any, createTaskDto: CreateTaskDto) {
-    if (!user?.userId) {
-      throw new InternalServerErrorException("Can't get user id")
-    }
-    const [taskDb, userDb, numberUsers] = await Promise.all([
+  async create(user: User, createTaskDto: CreateTaskDto) {
+    const [taskDb, numberUsers] = await Promise.all([
       this.prisma.task.findFirst({
         where: { name: createTaskDto.name, deletedAt: null },
-      }),
-      this.prisma.user.findFirst({
-        where: { id: user.userId, deletedAt: null },
       }),
       this.prisma.user.count({
         where: { id: { in: createTaskDto.userIds }, deletedAt: null },
       }),
     ])
-    if (!userDb) {
-      throw new InternalServerErrorException('This should not happen')
-    }
     if (taskDb) {
       throw new BadRequestException('Task already exists')
     }
@@ -55,13 +45,13 @@ export class TasksService {
         name: createTaskDto.name,
         content: createTaskDto.content,
         status: createTaskDto.status,
-        createdBy: { connect: { id: user.userId } },
+        createdBy: { connect: { id: user.id } },
         deadline: new Date(createTaskDto.deadline),
         usersTasks: {
           create: createTaskDto.userIds.map((assigneeId) => ({
             assignBy: {
               connect: {
-                id: user.userId,
+                id: user.id,
               },
             },
             user: {
@@ -99,10 +89,7 @@ export class TasksService {
     return taskDb
   }
 
-  async update(id: number, user: any, updateTaskDto: UpdateTaskDto) {
-    if (!user?.userId) {
-      throw new InternalServerErrorException("Can't get user id")
-    }
+  async update(id: number, user: User, updateTaskDto: UpdateTaskDto) {
     const taskDb = await this.prisma.task.findFirst({
       where: { id, deletedAt: null },
       select: baseTaskSelect,
@@ -142,7 +129,7 @@ export class TasksService {
             create: {
               assignBy: {
                 connect: {
-                  id: user.userId,
+                  id: user.id,
                 },
               },
               user: {

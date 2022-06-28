@@ -15,7 +15,7 @@ import {
   HttpStatus,
 } from '@nestjs/common'
 import { Request } from 'express'
-import { Role } from '@prisma/client'
+import { Role, User } from '@prisma/client'
 import { TasksService } from './tasks.service'
 import { CreateTaskDto } from './dto/create-task.dto'
 import { UpdateTaskDto } from './dto/update-task.dto'
@@ -34,7 +34,7 @@ export class TasksController {
   @Post()
   create(@Body() createTaskDto: CreateTaskDto, @Req() req: Request) {
     console.log(createTaskDto)
-    return this.tasksService.create(req.user, createTaskDto)
+    return this.tasksService.create(req.user as User, createTaskDto)
   }
 
   @Get()
@@ -58,7 +58,7 @@ export class TasksController {
     @Body() updateTaskDto: UpdateTaskDto,
     @Req() req: Request
   ) {
-    return this.tasksService.update(id, req.user, updateTaskDto)
+    return this.tasksService.update(id, req.user as User, updateTaskDto)
   }
 
   @Delete(':id')

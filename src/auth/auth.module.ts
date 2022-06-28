@@ -6,9 +6,11 @@ import { AuthService } from './auth.service'
 import { LocalStrategy } from './strategy/local.strategy'
 import { JwtStrategy } from './strategy/jwt.strategy'
 import config from 'src/config'
+import { PrismaModule } from 'src/prisma/prisma.module'
 
 @Module({
   imports: [
+    PrismaModule,
     UsersModule,
     PassportModule,
     JwtModule.register({

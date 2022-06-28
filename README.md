@@ -46,8 +46,8 @@
 
 # โจทย์
 
-[//]: # "- [Minimum Requirement](#คำแนะนำ)"
-[//]: # "- [Optional Requirement](#รายละเอียดของ Feature (Minimum Requirement))"
+[//]: # '- [Minimum Requirement](#คำแนะนำ)'
+[//]: # '- [Optional Requirement](#รายละเอียดของ Feature (Minimum Requirement))'
 
 ## วัตถุประสงค์
 
