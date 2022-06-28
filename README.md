@@ -181,3 +181,7 @@ Team
 - [RDBMS](https://devjourneys.com/2020/04/15/ฐานข้อมูลเบื้องต้น/)
 - [SQL & NoSQL](https://medium.com/@todspolwonhchomphu/sql-คืออะไร-และ-nosql-คืออะไร-561c750dbe4d)
 - [SQL vs NoSQL](https://phuri.medium.com/nosql-คืออะไร-ต่างจาก-rdbms-หรือ-sql-database-อย่างไร-dd8ac91a4197)
+
+# DB diagram
+
+[![Database diagram](Backend_Assignment.png)](https://dbdiagram.io/d/62b91c9669be0b672c45ea6a)
