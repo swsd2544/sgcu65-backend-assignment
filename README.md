@@ -1,4 +1,4 @@
-[Insert Your Name Here]
+ศิริวุฒิ ไสวดี
 
 # SGCU65 Backend Recruitment
 
@@ -8,8 +8,9 @@
 
 - [คำแนะนำ](#คำแนะนำ)
 - [โจทย์](#โจทย์)
-- [Note](#Note)
-- [Tips](#Tips)
+- [Note](#note)
+- [Tips](#tips)
+- [DB diagram](#db)
 
 # คำแนะนำ
 
@@ -155,7 +156,7 @@ Team
     - name
 ```
 
-# Note
+<h1 id="note">Note</h1>
 
 - ระยะเวลาของการทำ assignment เริ่มนับจากวันที่ผู้สมัครได้รับ email จากทาง อบจ
 - ในการทำ assignment นี้ผู้สมัครสามารถเลือกใช้ `framework` `library` `ภาษา` ต่างๆตามที่ถนัดได้เลย (ขอแค่ทำงานตามโจทย์ที่กำหนดให้ได้ก็พอ)
@@ -171,7 +172,7 @@ Team
    ## How To Run
    ```
 
-# Tips
+<h1 id="tips">Tips</h1>
 
 - [API คือ?](https://medium.com/skooldio/api-คืออะไร-264ee4186f2c)
 - [Framework คือ?](https://medium.com/@FIEHTZ/framework-คืออะไร-f33da15f5fb5)
@@ -181,7 +182,7 @@ Team
 - [SQL & NoSQL](https://medium.com/@todspolwonhchomphu/sql-คืออะไร-และ-nosql-คืออะไร-561c750dbe4d)
 - [SQL vs NoSQL](https://phuri.medium.com/nosql-คืออะไร-ต่างจาก-rdbms-หรือ-sql-database-อย่างไร-dd8ac91a4197)
 
-# DB diagram
+<h1 id="db">DB diagram</h1>
 
 [![Database diagram](Backend_Assignment.png)](https://dbdiagram.io/d/62b91c9669be0b672c45ea6a)
 
