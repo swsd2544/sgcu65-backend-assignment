@@ -1,4 +1,3 @@
-import { baseUserSelect } from 'src/users/users.service'
 import { Prisma, User } from '@prisma/client'
 import {
   BadRequestException,
@@ -8,15 +7,7 @@ import {
 import { PrismaService } from 'src/prisma/prisma.service'
 import { CreateTaskDto } from './dto/create-task.dto'
 import { UpdateTaskDto } from './dto/update-task.dto'
-
-const baseTaskSelect: Prisma.TaskSelect = {
-  id: true,
-  name: true,
-  content: true,
-  deadline: true,
-  createdBy: { select: baseUserSelect },
-  usersTasks: { select: { user: { select: baseUserSelect } } },
-}
+import { taskSelect } from 'src/types'
 
 const baseSearchFields = ['id', 'name', 'content']
 
@@ -25,38 +16,36 @@ export class TasksService {
   constructor(private readonly prisma: PrismaService) {}
 
   async create(user: User, createTaskDto: CreateTaskDto) {
-    const [taskDb, numberUsers] = await Promise.all([
+    const { teamIds = [], ...data } = createTaskDto
+    const [taskDb, numberTeams] = await Promise.all([
       this.prisma.task.findFirst({
         where: { name: createTaskDto.name, deletedAt: null },
       }),
-      this.prisma.user.count({
-        where: { id: { in: createTaskDto.userIds }, deletedAt: null },
+      this.prisma.team.count({
+        where: { id: { in: teamIds }, deletedAt: null },
       }),
     ])
     if (taskDb) {
       throw new BadRequestException('Task already exists')
     }
-    if (numberUsers !== createTaskDto.userIds.length) {
-      throw new BadRequestException("Some users aren't existed in the database")
+    if (numberTeams !== teamIds.length) {
+      throw new BadRequestException("Some teams aren't existed in the database")
     }
     return await this.prisma.task.create({
-      select: baseTaskSelect,
+      select: taskSelect,
       data: {
-        name: createTaskDto.name,
-        content: createTaskDto.content,
-        status: createTaskDto.status,
+        ...data,
         createdBy: { connect: { id: user.id } },
-        deadline: new Date(createTaskDto.deadline),
-        usersTasks: {
-          create: createTaskDto.userIds.map((assigneeId) => ({
+        teamsTasks: {
+          create: teamIds.map((teamId) => ({
             assignBy: {
               connect: {
                 id: user.id,
               },
             },
-            user: {
+            team: {
               connect: {
-                id: assigneeId,
+                id: teamId,
               },
             },
           })),
@@ -73,7 +62,7 @@ export class TasksService {
       }))
     }
     return await this.prisma.task.findMany({
-      select: baseTaskSelect,
+      select: taskSelect,
       where: whereOption,
     })
   }
@@ -81,7 +70,7 @@ export class TasksService {
   async findOne(id: number) {
     const taskDb = await this.prisma.task.findFirst({
       where: { id, deletedAt: null },
-      select: baseTaskSelect,
+      select: taskSelect,
     })
     if (!taskDb) {
       throw new NotFoundException('Task not found')
@@ -90,10 +79,16 @@ export class TasksService {
   }
 
   async update(id: number, user: User, updateTaskDto: UpdateTaskDto) {
-    const taskDb = await this.prisma.task.findFirst({
-      where: { id, deletedAt: null },
-      select: baseTaskSelect,
-    })
+    const { teamIds = [], ...data } = updateTaskDto
+    const [taskDb, numberTeams] = await Promise.all([
+      this.prisma.task.findFirst({
+        where: { id, deletedAt: null },
+        select: taskSelect,
+      }),
+      this.prisma.team.count({
+        where: { id: { in: teamIds }, deletedAt: null },
+      }),
+    ])
     if (!taskDb) {
       throw new NotFoundException('Task not found')
     }
@@ -105,26 +100,18 @@ export class TasksService {
     ) {
       throw new BadRequestException('This task name already exists')
     }
-    if (
-      updateTaskDto.userIds &&
-      (await this.prisma.user.count({
-        where: { id: { in: updateTaskDto.userIds }, deletedAt: null },
-      })) !== updateTaskDto.userIds.length
-    ) {
+    if (teamIds.length !== numberTeams) {
       throw new BadRequestException("Some users aren't existed in the database")
     }
     const task = await this.prisma.task.update({
       where: { id },
-      select: baseTaskSelect,
+      select: taskSelect,
       data: {
-        name: updateTaskDto.name,
-        content: updateTaskDto.content,
-        status: updateTaskDto.status,
-        deadline: updateTaskDto.deadline && new Date(updateTaskDto.deadline),
-        usersTasks: {
-          upsert: updateTaskDto.userIds.map((assigneeId) => ({
+        ...data,
+        teamsTasks: {
+          upsert: teamIds.map((teamId) => ({
             where: {
-              usersTasksIdentifier: { userId: assigneeId, taskId: id },
+              teamsTasksIdentifier: { teamId: teamId, taskId: id },
             },
             create: {
               assignBy: {
@@ -132,9 +119,9 @@ export class TasksService {
                   id: user.id,
                 },
               },
-              user: {
+              team: {
                 connect: {
-                  id: assigneeId,
+                  id: teamId,
                 },
               },
             },
@@ -155,7 +142,7 @@ export class TasksService {
     }
     await this.prisma.$transaction([
       this.prisma.task.delete({ where: { id } }),
-      this.prisma.usersTasks.deleteMany({ where: { taskId: id } }),
+      this.prisma.teamsTasks.deleteMany({ where: { taskId: id } }),
     ])
   }
 }

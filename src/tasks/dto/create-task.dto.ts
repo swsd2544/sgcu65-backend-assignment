@@ -16,5 +16,5 @@ export class CreateTaskDto {
 
   @IsArray()
   @IsNumber({}, { each: true })
-  userIds: number[]
+  teamIds: number[]
 }
