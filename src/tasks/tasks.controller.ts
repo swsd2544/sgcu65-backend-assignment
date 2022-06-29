@@ -30,7 +30,6 @@ import { JwtAuthGuard } from 'src/auth/guard/jwt-auth.guard'
 export class TasksController {
   constructor(private readonly tasksService: TasksService) {}
 
-  @UsePipes(new ValidationPipe({ transform: true }))
   @Post()
   create(@Body() createTaskDto: CreateTaskDto, @Req() req: Request) {
     console.log(createTaskDto)
@@ -52,7 +51,6 @@ export class TasksController {
     return this.tasksService.findOne(id)
   }
 
-  @UsePipes(new ValidationPipe({ transform: true }))
   @Put(':id')
   update(
     @Param('id', ParseIntPipe) id: number,

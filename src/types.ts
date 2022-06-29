@@ -1,5 +1,3 @@
-import { Prisma } from '@prisma/client'
-
 const baseTaskSelect = {
   id: true,
   name: true,

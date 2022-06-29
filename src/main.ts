@@ -6,7 +6,7 @@ import config from './config'
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule)
-  app.useGlobalPipes(new ValidationPipe())
+  app.useGlobalPipes(new ValidationPipe({ transform: true }))
   const prismaService = app.get(PrismaService)
   await prismaService.enableShutdownHooks(app)
   await app.listen(config.port)
