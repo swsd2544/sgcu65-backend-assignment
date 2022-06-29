@@ -169,7 +169,6 @@ Team
 
    ```
    ## How To Run
-   <วิธีการเปิดเว็บ>
    ```
 
 # Tips
@@ -185,3 +184,23 @@ Team
 # DB diagram
 
 [![Database diagram](Backend_Assignment.png)](https://dbdiagram.io/d/62b91c9669be0b672c45ea6a)
+
+# How to run
+
+Create .env file with the template from .env.example
+
+## Docker
+
+```
+docker-compose up
+```
+
+## Non-Docker
+
+#### prerequisite : Have postgresql in your device
+
+```
+yarn install
+npx prisma generate
+yarn start
+```

@@ -1,0 +1,18 @@
+version: '3'
+services:
+  postgres:
+    image: 'postgres:latest'
+    ports:
+      - 5432:5432
+    env_file:
+      - .env # The name of your environment file (the one at the repository root)
+    volumes:
+      - ./db-data/:/var/lib/postgresql/data/
+  backend:
+    build:
+      context: .
+      dockerfile: 'Dockerfile'
+    ports:
+      - 3000:3000
+    env_file:
+      - .env # The name of your environment file (the one at the repository root)
