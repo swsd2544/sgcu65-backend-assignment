@@ -10,7 +10,10 @@
 - [โจทย์](#โจทย์)
 - [Note](#note)
 - [Tips](#tips)
+- [Assumptions](#assumptions)
 - [DB diagram](#db)
+- [How to run](#howToRun)
+- [Additional ideas](#ideas)
 
 # คำแนะนำ
 
@@ -182,26 +185,50 @@ Team
 - [SQL & NoSQL](https://medium.com/@todspolwonhchomphu/sql-คืออะไร-และ-nosql-คืออะไร-561c750dbe4d)
 - [SQL vs NoSQL](https://phuri.medium.com/nosql-คืออะไร-ต่างจาก-rdbms-หรือ-sql-database-อย่างไร-dd8ac91a4197)
 
+<h1 id="assumptions">Assumptions</h1>
+
+- ทุกอย่างเริ่มจาก user
+- user เป็นคนสร้าง team และกำหนดสมาชิกในทีมผ่านทาง team api เท่านั้น
+- user เป็นคนสร้าง task และกำหนดทีมที่รับผิดชอบผ่านทาง task api เท่านั้น
+- หาก user ถูกลบ
+  - user จะถูกนำออกจากทุกทีมที่ user อยู่
+  - ยกเลิกทุก task ที่ user เป็นคนสั่ง
+  - เปลี่ยนแปลงคนสร้าง task ให้เป็นว่างเปล่า
+- หาก task ถูกลบ
+  - ยกเลิกการสั่งงานกับทุกทีมที่เชื่อมกับ task นี้อยู่
+- หาก team ถูกลบ
+  - ลบการสั่งงานทุกอันที่เชื่อมกับทีมนี้อยู่
+  - นำทุก user ออกจากทีมนี้
+
 <h1 id="db">DB diagram</h1>
 
 [![Database diagram](Backend_Assignment.png)](https://dbdiagram.io/d/62b91c9669be0b672c45ea6a)
 
-# How to run
+<h1 id="howToRun">How to run</h1>
 
 Create .env file with the template from .env.example
 
 ## Docker
 
-```
+#### prerequisite: Have docker in your device
+
+```zsh
 docker-compose up
 ```
 
 ## Non-Docker
 
-#### prerequisite : Have postgresql in your device
+#### prerequisite: Have postgresql, node, and yarn in your device
 
-```
+```zsh
+# yarn
 yarn install
 npx prisma generate
 yarn start
 ```
+
+<h1 id="ideas">Additional ideas</h1>
+
+- ทำเป็น graphql เนื่องจาก database มีลักษณะเป็น graph
+- แปลงเป็น microservices เพื่อ scalability และ maintainability
+- ใช้ grpc ระหว่าง microservices เพื่อเพิ่มความเร็ว

@@ -106,6 +106,10 @@ export class UsersService {
     }
     await this.prisma.$transaction([
       this.prisma.user.delete({ where: { id } }),
+      this.prisma.task.updateMany({
+        where: { userId: id },
+        data: { userId: null },
+      }),
       this.prisma.teamsTasks.deleteMany({
         where: { assignerId: id },
       }),
