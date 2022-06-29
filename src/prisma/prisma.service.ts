@@ -7,7 +7,11 @@ export class PrismaService extends PrismaClient implements OnModuleInit {
     await this.$connect()
     this.$use(async (params, next) => {
       // Check incoming query type
-      if (params.model == 'User' || params.model == 'Task') {
+      if (
+        params.model == 'User' ||
+        params.model == 'Task' ||
+        params.model == 'Team'
+      ) {
         if (params.action == 'delete') {
           // Delete queries
           // Change action to an update

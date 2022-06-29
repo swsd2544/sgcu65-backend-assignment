@@ -93,16 +93,17 @@ export class TasksService {
     if (!taskDb) {
       throw new NotFoundException('Task not found')
     }
+    if (teamIds.length !== numberTeams) {
+      throw new BadRequestException("Some users aren't existed in the database")
+    }
     if (
-      updateTaskDto.name &&
+      data.name &&
+      data.name !== taskDb.name &&
       (await this.prisma.task.findFirst({
-        where: { name: updateTaskDto.name, deletedAt: null },
+        where: { name: data.name, deletedAt: null },
       }))
     ) {
       throw new BadRequestException('This task name already exists')
-    }
-    if (teamIds.length !== numberTeams) {
-      throw new BadRequestException("Some users aren't existed in the database")
     }
     const task = await this.prisma.task.update({
       where: { id },

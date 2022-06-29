@@ -77,9 +77,10 @@ export class UsersService {
       throw new NotFoundException('User not found')
     }
     if (
-      updateUserDto.email &&
+      data.email &&
+      data.email !== userDb.email &&
       (await this.prisma.user.findFirst({
-        where: { email: updateUserDto.email },
+        where: { email: data.email },
       }))
     ) {
       throw new BadRequestException('This email already exists')

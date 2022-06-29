@@ -5,12 +5,9 @@ import {
   Body,
   Param,
   Delete,
-  ParseIntPipe,
   Query,
   Req,
   UseGuards,
-  UsePipes,
-  ValidationPipe,
   Put,
   HttpStatus,
 } from '@nestjs/common'
@@ -47,13 +44,13 @@ export class TasksController {
   }
 
   @Get(':id')
-  findOne(@Param('id', ParseIntPipe) id: number) {
+  findOne(@Param('id') id: number) {
     return this.tasksService.findOne(id)
   }
 
   @Put(':id')
   update(
-    @Param('id', ParseIntPipe) id: number,
+    @Param('id') id: number,
     @Body() updateTaskDto: UpdateTaskDto,
     @Req() req: Request
   ) {
@@ -61,7 +58,7 @@ export class TasksController {
   }
 
   @Delete(':id')
-  async remove(@Param('id', ParseIntPipe) id: number) {
+  async remove(@Param('id') id: number) {
     await this.tasksService.remove(id)
     return { message: 'Successfully delete', status: HttpStatus.OK }
   }

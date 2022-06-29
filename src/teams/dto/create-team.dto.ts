@@ -6,5 +6,5 @@ export class CreateTeamDto {
 
   @IsArray()
   @IsNumber({}, { each: true })
-  userIds: number[]
+  userIds: number[] = []
 }
