@@ -18,10 +18,11 @@ export class UsersService {
 
   async create(createUserDto: CreateUserDto) {
     const { password, ...data } = createUserDto
-    const userDb = this.prisma.user.findFirst({
-      where: { email: createUserDto.email, deletedAt: null },
+    const userDb = await this.prisma.user.findFirst({
+      where: { email: data.email, deletedAt: null },
     })
     if (userDb) {
+      console.log(userDb)
       throw new BadRequestException('User already exists')
     }
     const hashedPassword = await generateHashedPassword(password)
@@ -44,6 +45,7 @@ export class UsersService {
     return await this.prisma.user.findMany({
       select: userSelect,
       where: whereOption,
+      orderBy: { id: 'asc' },
     })
   }
 

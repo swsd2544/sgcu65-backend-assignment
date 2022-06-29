@@ -64,6 +64,7 @@ export class TasksService {
     return await this.prisma.task.findMany({
       select: taskSelect,
       where: whereOption,
+      orderBy: { id: 'asc' },
     })
   }
 

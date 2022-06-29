@@ -52,6 +52,7 @@ export class TasksController {
     return this.tasksService.findOne(id)
   }
 
+  @UsePipes(new ValidationPipe({ transform: true }))
   @Put(':id')
   update(
     @Param('id', ParseIntPipe) id: number,
