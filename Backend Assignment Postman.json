@@ -43,7 +43,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"email\": \"example@gmail.com\",\n    \"password\": \"password\",\n    \"firstname\": \"firstname\",\n    \"lastname\": \"lastname\",\n    \"role\": \"User\"\n}",
+							"raw": "{\n    \"email\": \"example10@gmail.com\",\n    \"password\": \"password\",\n    \"firstname\": \"firstname\",\n    \"lastname\": \"lastname\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -92,7 +92,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"password\": \"password\",\n    \"firstname\": \"B1\",\n    \"lastname\": \"C2\",\n    \"role\": \"USER\"\n}",
+							"raw": "{\n    \"email\": \"example522555@gmail.com\",\n    \"password\": \"password\",\n    \"firstname\": \"B1\",\n    \"lastname\": \"C2\",\n    \"role\": \"USER\",\n    \"_csrf\": \"cAudJZylj3Clj2mDeUV6MO5b\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -117,7 +117,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{base_url}}/users?search=C",
+							"raw": "{{base_url}}/users",
 							"host": [
 								"{{base_url}}"
 							],
@@ -127,7 +127,8 @@
 							"query": [
 								{
 									"key": "search",
-									"value": "C"
+									"value": "C",
+									"disabled": true
 								}
 							]
 						}
@@ -151,7 +152,7 @@
 							"variable": [
 								{
 									"key": "id_user",
-									"value": "2"
+									"value": "11"
 								}
 							]
 						}
@@ -165,7 +166,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"firstname\": \"B2\"\n}",
+							"raw": "{\n    \"firstname\": \"B3333\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -184,7 +185,7 @@
 							"variable": [
 								{
 									"key": "id_user",
-									"value": "1"
+									"value": "10"
 								}
 							]
 						}
@@ -208,7 +209,7 @@
 							"variable": [
 								{
 									"key": "id_user",
-									"value": "1"
+									"value": "4"
 								}
 							]
 						}
@@ -227,7 +228,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"email\": \"example@gmail.com\",\n    \"password\": \"password\",\n}",
+							"raw": "{\n    \"name\": \"task4\",\n    \"deadline\": \"2023-01-01\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -235,12 +236,12 @@
 							}
 						},
 						"url": {
-							"raw": "{{base_url}}/users",
+							"raw": "{{base_url}}/tasks",
 							"host": [
 								"{{base_url}}"
 							],
 							"path": [
-								"users"
+								"tasks"
 							]
 						}
 					},
@@ -250,7 +251,16 @@
 					"name": "API 202 - Get all tasks",
 					"request": {
 						"method": "GET",
-						"header": []
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/tasks",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"tasks"
+							]
+						}
 					},
 					"response": []
 				},
@@ -283,19 +293,28 @@
 					"request": {
 						"method": "PUT",
 						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"deadline\": \"2030-02-01\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
 						"url": {
-							"raw": "{{base_url}}/users/:id_user",
+							"raw": "{{base_url}}/tasks/:id_task",
 							"host": [
 								"{{base_url}}"
 							],
 							"path": [
-								"users",
-								":id_user"
+								"tasks",
+								":id_task"
 							],
 							"variable": [
 								{
-									"key": "id_user",
-									"value": null
+									"key": "id_task",
+									"value": "4"
 								}
 							]
 						}
@@ -303,7 +322,7 @@
 					"response": []
 				},
 				{
-					"name": "API 204 - Delete task",
+					"name": "API 205 - Delete task",
 					"request": {
 						"method": "DELETE",
 						"header": [],
@@ -319,10 +338,118 @@
 							"variable": [
 								{
 									"key": "id_task",
-									"value": "2"
+									"value": "3"
 								}
 							]
 						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Teams",
+			"item": [
+				{
+					"name": "API 301 - Create team",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Team-3\",\n    \"userIds\": [5, 7]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/teams",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"teams"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "API 302 - Get all teams",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/teams?search=1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"teams"
+							],
+							"query": [
+								{
+									"key": "search",
+									"value": "1"
+								},
+								{
+									"key": "searchFields[]",
+									"value": "createdAt",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "API 303 - Get team",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": []
+				},
+				{
+					"name": "API 304 - Update team",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"team-1\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/teams/:id_team",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"teams",
+								":id_team"
+							],
+							"variable": [
+								{
+									"key": "id_team",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "API 305 - Delete team",
+					"request": {
+						"method": "GET",
+						"header": []
 					},
 					"response": []
 				}

@@ -227,6 +227,8 @@ npx prisma generate
 yarn start
 ```
 
+Postman.json file in the git repository
+
 <h1 id="ideas">Additional ideas</h1>
 
 - ทำเป็น graphql เนื่องจาก database มีลักษณะเป็น graph
