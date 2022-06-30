@@ -6,7 +6,6 @@ import {
   Param,
   Delete,
   Query,
-  BadRequestException,
   Put,
   HttpStatus,
   UseGuards,
@@ -18,10 +17,7 @@ import { RolesGuard } from 'src/auth/guard/roles.guard'
 import { JwtAuthGuard } from 'src/auth/guard/jwt-auth.guard'
 import { Role } from '@prisma/client'
 import { Roles } from 'src/auth/decorator/roles.decorator'
-
-enum baseSearchFields {
-  name = 'name',
-}
+import { GetTeamsDto } from './dto/get-teams.dto'
 
 @UseGuards(RolesGuard)
 @UseGuards(JwtAuthGuard)
@@ -36,21 +32,9 @@ export class TeamsController {
   }
 
   @Get()
-  findAll(
-    @Query('search') search: string,
-    @Query('searchFields')
-    searchFields: string | string[] = Object.values(baseSearchFields)
-  ) {
+  findAll(@Query() { search, searchFields }: GetTeamsDto) {
     const fields =
-      typeof searchFields === 'string' ? [searchFields] : searchFields
-    if (
-      fields.some(
-        (field) =>
-          !Object.values(baseSearchFields).includes(field as baseSearchFields)
-      )
-    ) {
-      throw new BadRequestException('Invalid search fields')
-    }
+      typeof searchFields !== 'object' ? [searchFields] : searchFields
     return this.teamsService.findAll(search, fields)
   }
 

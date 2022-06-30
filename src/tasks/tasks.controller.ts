@@ -10,7 +10,6 @@ import {
   UseGuards,
   Put,
   HttpStatus,
-  BadRequestException,
 } from '@nestjs/common'
 import { Request } from 'express'
 import { Role, User } from '@prisma/client'
@@ -20,11 +19,7 @@ import { UpdateTaskDto } from './dto/update-task.dto'
 import { Roles } from 'src/auth/decorator/roles.decorator'
 import { RolesGuard } from 'src/auth/guard/roles.guard'
 import { JwtAuthGuard } from 'src/auth/guard/jwt-auth.guard'
-
-enum baseSearchFields {
-  name = 'name',
-  content = 'content',
-}
+import { GetTasksDto } from './dto/get-tasks.dto'
 
 @UseGuards(RolesGuard)
 @UseGuards(JwtAuthGuard)
@@ -40,21 +35,9 @@ export class TasksController {
   }
 
   @Get()
-  findAll(
-    @Query('search') search: string,
-    @Query('searchField')
-    searchFields: string | string[] = Object.values(baseSearchFields)
-  ) {
+  findAll(@Query() { search, searchFields }: GetTasksDto) {
     const fields =
-      typeof searchFields === 'string' ? [searchFields] : searchFields
-    if (
-      fields.some(
-        (field) =>
-          !Object.values(baseSearchFields).includes(field as baseSearchFields)
-      )
-    ) {
-      throw new BadRequestException('Invalid search field')
-    }
+      typeof searchFields !== 'object' ? [searchFields] : searchFields
     return this.tasksService.findAll(search, fields)
   }
 
