@@ -9,8 +9,6 @@ import { CreateTaskDto } from './dto/create-task.dto'
 import { UpdateTaskDto } from './dto/update-task.dto'
 import { taskSelect } from 'src/types'
 
-const baseSearchFields = ['id', 'name', 'content']
-
 @Injectable()
 export class TasksService {
   constructor(private readonly prisma: PrismaService) {}
@@ -54,7 +52,7 @@ export class TasksService {
     })
   }
 
-  async findAll(search: string, searchFields: string[] = baseSearchFields) {
+  async findAll(search: string, searchFields: string[]) {
     const whereOption: Prisma.TaskWhereInput = { deletedAt: null }
     if (search && search !== '') {
       whereOption.OR = searchFields.map((field) => ({

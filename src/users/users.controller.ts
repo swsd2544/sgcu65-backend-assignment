@@ -9,6 +9,7 @@ import {
   HttpStatus,
   UseGuards,
   Query,
+  BadRequestException,
 } from '@nestjs/common'
 import { UsersService } from './users.service'
 import { CreateUserDto } from './dto/create-user.dto'
@@ -18,6 +19,11 @@ import { Roles } from 'src/auth/decorator/roles.decorator'
 import { Role } from '@prisma/client'
 import { RolesGuard } from 'src/auth/guard/roles.guard'
 
+enum baseSearchFields {
+  email = 'email',
+  firstname = 'firstname',
+  lastname = 'lastname',
+}
 @UseGuards(RolesGuard)
 @UseGuards(JwtAuthGuard)
 @Roles(Role.ADMIN)
@@ -33,10 +39,19 @@ export class UsersController {
   @Get()
   findAll(
     @Query('search') search: string,
-    @Query('searchField') searchFields: string | string[]
+    @Query('searchField')
+    searchFields: string | string[] = Object.values(baseSearchFields)
   ) {
     const fields =
       typeof searchFields === 'string' ? [searchFields] : searchFields
+    if (
+      fields.some(
+        (field) =>
+          !Object.values(baseSearchFields).includes(field as baseSearchFields)
+      )
+    ) {
+      throw new BadRequestException('Invalid fields')
+    }
     return this.usersService.findAll(search, fields)
   }
 

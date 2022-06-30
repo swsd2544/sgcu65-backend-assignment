@@ -10,8 +10,6 @@ import { generateHashedPassword } from 'src/utils/bcrypt'
 import { CreateUserDto } from './dto/create-user.dto'
 import { UpdateUserDto } from './dto/update-user.dto'
 
-const baseSearchFields = ['email', 'firstname', 'lastname']
-
 @Injectable()
 export class UsersService {
   constructor(private readonly prisma: PrismaService) {}
@@ -22,7 +20,6 @@ export class UsersService {
       where: { email: data.email, deletedAt: null },
     })
     if (userDb) {
-      console.log(userDb)
       throw new BadRequestException('User already exists')
     }
     const hashedPassword = await generateHashedPassword(password)
@@ -35,7 +32,7 @@ export class UsersService {
     })
   }
 
-  async findAll(search: string, searchFields: string[] = baseSearchFields) {
+  async findAll(search: string, searchFields: string[]) {
     const whereOption: Prisma.UserWhereInput = { deletedAt: null }
     if (search && search !== '') {
       whereOption.OR = searchFields.map((field) => ({

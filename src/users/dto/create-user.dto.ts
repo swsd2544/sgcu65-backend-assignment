@@ -13,5 +13,5 @@ export class CreateUserDto {
   lastname: string
 
   @IsNotEmpty()
-  role: Role
+  role: Role = Role.USER
 }

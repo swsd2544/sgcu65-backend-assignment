@@ -9,13 +9,23 @@ import {
   BadRequestException,
   Put,
   HttpStatus,
+  UseGuards,
 } from '@nestjs/common'
 import { TeamsService } from './teams.service'
 import { CreateTeamDto } from './dto/create-team.dto'
 import { UpdateTeamDto } from './dto/update-team.dto'
+import { RolesGuard } from 'src/auth/guard/roles.guard'
+import { JwtAuthGuard } from 'src/auth/guard/jwt-auth.guard'
+import { Role } from '@prisma/client'
+import { Roles } from 'src/auth/decorator/roles.decorator'
 
-const baseSearchFields = ['name']
+enum baseSearchFields {
+  name = 'name',
+}
 
+@UseGuards(RolesGuard)
+@UseGuards(JwtAuthGuard)
+@Roles(Role.ADMIN)
 @Controller('teams')
 export class TeamsController {
   constructor(private readonly teamsService: TeamsService) {}
@@ -29,12 +39,17 @@ export class TeamsController {
   findAll(
     @Query('search') search: string,
     @Query('searchFields')
-    searchFields: string | string[] = baseSearchFields
+    searchFields: string | string[] = Object.values(baseSearchFields)
   ) {
     const fields =
       typeof searchFields === 'string' ? [searchFields] : searchFields
-    if (fields.some((field) => !baseSearchFields.includes(field))) {
-      throw new BadRequestException("Some of seach fields aren't allowed")
+    if (
+      fields.some(
+        (field) =>
+          !Object.values(baseSearchFields).includes(field as baseSearchFields)
+      )
+    ) {
+      throw new BadRequestException('Invalid search fields')
     }
     return this.teamsService.findAll(search, fields)
   }

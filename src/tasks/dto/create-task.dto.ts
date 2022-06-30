@@ -8,7 +8,7 @@ export class CreateTaskDto {
 
   content: string
 
-  status: Status
+  status: Status = Status.PENDING
 
   @Type(() => Date)
   @IsDate()
